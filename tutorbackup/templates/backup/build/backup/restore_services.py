@@ -148,7 +148,11 @@ def download_from_s3(file_name, version_id=None):
         else:
             version_id_correct = True
 
-        received_checksum = obj_metadata['Metadata']['checksum-md5']
+        # AWS S3 / MinIO workaround
+        if 'checksum-md5' in obj_metadata['Metadata']:
+            received_checksum = obj_metadata['Metadata']['checksum-md5']
+        elif 'Checksum-Md5' in obj_metadata['Metadata']:
+            received_checksum = obj_metadata['Metadata']['Checksum-Md5']
         calculated_checksum = calculate_checksum(file_name)
         checksum_correct = (received_checksum == calculated_checksum)
 
