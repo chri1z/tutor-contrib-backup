@@ -176,7 +176,11 @@ def upload_to_s3():
             Key=os.path.basename(file_name),
         )
 
-        received_checksum = obj_metadata['Metadata']['checksum-md5']
+        # AWS S3 / MinIO workaround
+        if 'checksum-md5' in obj_metadata['Metadata']:
+            received_checksum = obj_metadata['Metadata']['checksum-md5']
+        elif 'Checksum-Md5' in obj_metadata['Metadata']:
+            received_checksum = obj_metadata['Metadata']['Checksum-Md5']
         version_id = obj_metadata['VersionId']
         size = obj_metadata['ContentLength']
 
